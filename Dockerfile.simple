@@ -1,0 +1,18 @@
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["app/Bookstore.Web/Bookstore.Web.csproj", "app/Bookstore.Web/"]
+COPY ["app/Bookstore.Data/Bookstore.Data.csproj", "app/Bookstore.Data/"]
+COPY ["app/Bookstore.Domain/Bookstore.Domain.csproj", "app/Bookstore.Domain/"]
+COPY ["app/Bookstore.Common/Bookstore.Common.csproj", "app/Bookstore.Common/"]
+RUN dotnet restore "app/Bookstore.Web/Bookstore.Web.csproj"
+COPY . .
+WORKDIR "/src/app/Bookstore.Web"
+RUN dotnet build "Bookstore.Web.csproj" -c Release -o /app/build
+RUN dotnet publish "Bookstore.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/publish .
+EXPOSE 8080
+ENV ASPNETCORE_URLS=http://+:8080
+ENTRYPOINT ["dotnet", "Bookstore.Web.dll"]
