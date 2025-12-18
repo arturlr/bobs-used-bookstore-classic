@@ -1,6 +1,7 @@
 using Amazon.Extensions.NETCore.Setup;
 using Microsoft.Extensions.Logging;
 using System;
+using Amazon.RDS.Util;
 using Amazon.Rekognition;
 using Amazon.S3;
 using BobsBookstoreClassic.Data;
@@ -71,13 +72,25 @@ namespace Bookstore.Web
 
         private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
+            // Add Lambda hosting support (works alongside Kestrel)
+            services.AddAWSLambdaHosting(Amazon.Lambda.AspNetCoreServer.LambdaEventSource.HttpApi);
+
             // Add MVC with Areas support
             services.AddControllersWithViews();
 
             // Configure DbContext
-            var connectionString = configuration.GetConnectionString("BookstoreDatabaseConnection");
+            var connectionString = GetConnectionString(configuration);
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlServer(connectionString, sqlServerOptions =>
+                {
+                    // Configure connection pooling for RDS Proxy compatibility
+                    sqlServerOptions.EnableRetryOnFailure(
+                        maxRetryCount: 3,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorNumbersToAdd: null);
+                    // Connection timeout for Lambda cold starts
+                    sqlServerOptions.CommandTimeout(30);
+                }));
 
             // Register application services
             services.AddScoped<IBookService, BookService>();
@@ -202,6 +215,38 @@ namespace Bookstore.Web
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+        }
+
+        private static string GetConnectionString(IConfiguration configuration)
+        {
+            // Check if we're running in Lambda with RDS Proxy
+            var useRdsProxy = configuration.GetValue<bool>("Database:UseRdsProxy", false);
+            
+            if (useRdsProxy)
+            {
+                // Build connection string for RDS Proxy with IAM authentication
+                var rdsProxyEndpoint = configuration["Database:RdsProxyEndpoint"];
+                var databaseName = configuration["Database:DatabaseName"];
+                var region = configuration["AWS:Region"] ?? Environment.GetEnvironmentVariable("AWS_REGION") ?? "us-east-1";
+                var port = configuration.GetValue<int>("Database:Port", 1433);
+                
+                // Generate IAM authentication token for RDS Proxy
+                try
+                {
+                    var authToken = RDSAuthTokenGenerator.GenerateAuthToken(rdsProxyEndpoint, port, "admin");
+                    
+                    return $"Server={rdsProxyEndpoint},{port};Database={databaseName};User Id=admin;Password={authToken};Encrypt=True;TrustServerCertificate=True;";
+                }
+                catch (Exception ex)
+                {
+                    // Log error and fall back to standard connection string
+                    var logger = LogManager.GetCurrentClassLogger();
+                    logger.Error(ex, "Failed to generate RDS Proxy IAM authentication token, falling back to standard connection string");
+                }
+            }
+            
+            // Use standard connection string (for local dev or ECS with direct RDS connection)
+            return configuration.GetConnectionString("BookstoreDatabaseConnection");
         }
     }
 }
