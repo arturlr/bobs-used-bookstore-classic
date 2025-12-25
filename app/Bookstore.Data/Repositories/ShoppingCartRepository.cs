@@ -1,6 +1,6 @@
 ﻿using Bookstore.Domain.Carts;
 using System.Threading.Tasks;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace Bookstore.Data.Repositories

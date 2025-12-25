@@ -14,7 +14,12 @@ internal sealed class Program
         var coreStack = new CoreStack(app, $"{Constants.AppName}Core", new StackProps { Env = env });
         var networkStack = new NetworkStack(app, $"{Constants.AppName}Network", new StackProps { Env = env });
         var databaseStack = new DatabaseStack(app, $"{Constants.AppName}Database", new DatabaseStackProps { Env = env, Vpc = networkStack.Vpc });
+        
+        // ECS Stack - existing deployment option
         var ecsStack = new EcsStack(app, $"{Constants.AppName}ECS", new EcsStackProps { Env = env, Vpc = networkStack.Vpc, Database = databaseStack.Database, ImageBucket = coreStack.ImageBucket, WebAppUserPool = coreStack.WebAppUserPool });
+
+        // Lambda Stack - new deployment option with RDS Proxy
+        var lambdaStack = new LambdaStack(app, $"{Constants.AppName}Lambda", new LambdaStackProps { Env = env, Vpc = networkStack.Vpc, Database = databaseStack.Database, ImageBucket = coreStack.ImageBucket, WebAppUserPool = coreStack.WebAppUserPool });
 
         app.Synth();
     }

@@ -1,9 +1,10 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
 using Bookstore.Web.Helpers;
@@ -82,7 +83,7 @@ namespace Bookstore.Web.Areas.Admin.Models.Inventory
         [MaxFileSize(2*1024*1024)]
         [ImageTypes(new string[] {".png", ".jpg", ".jpeg"})]
         [DisplayName("Cover image")]
-        public HttpPostedFileBase CoverImage { get; set; }
+        public IFormFile CoverImage { get; set; }
         
         public string CoverImageUrl { get; set; }
 

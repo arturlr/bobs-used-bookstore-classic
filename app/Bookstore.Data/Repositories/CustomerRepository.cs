@@ -1,5 +1,5 @@
 ﻿using Bookstore.Domain.Customers;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace Bookstore.Data.Repositories

@@ -1,8 +1,8 @@
-﻿using System;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace Bookstore.Web.Helpers
 {
@@ -19,7 +19,7 @@ namespace Bookstore.Web.Helpers
         {
             if (value == null) return true;
 
-            if (!(value is HttpPostedFileBase file)) return base.IsValid(value);
+            if (!(value is IFormFile file)) return base.IsValid(value);
 
             var extension = Path.GetExtension(file.FileName);
 
@@ -28,7 +28,7 @@ namespace Bookstore.Web.Helpers
 
         public override string FormatErrorMessage(string name)
         {
-            return $"{name} must be a PNG or JPG image.";
+            return $"The {name} field must be one of the following types: {string.Join(", ", imageTypes)}";
         }
     }
 }

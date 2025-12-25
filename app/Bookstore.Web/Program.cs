@@ -1,4 +1,6 @@
 using Amazon.Extensions.NETCore.Setup;
+using Microsoft.Extensions.Logging;
+using System;
 using Amazon.RDS.Util;
 using Amazon.Rekognition;
 using Amazon.S3;
@@ -25,33 +27,59 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
-using System;
+using NLog;
+using NLog.Web;
 
 namespace Bookstore.Web
 {
-    /// <summary>
-    /// Startup class for Lambda hosting. This mirrors the configuration from Program.cs
-    /// but in the Startup pattern required by Lambda.
-    /// </summary>
-    public class Startup
+    public class Program
     {
-        public Startup(IConfiguration configuration)
+        public static void Main(string[] args)
         {
-            Configuration = configuration;
+            var logger = LogManager.Setup().LoadConfigurationFromAppSettings().GetCurrentClassLogger();
+            
+            try
+            {
+                var builder = WebApplication.CreateBuilder(args);
+
+                // Configure NLog
+                builder.Logging.ClearProviders();
+                builder.Host.UseNLog();
+
+                // Initialize BookstoreConfiguration
+                BookstoreConfiguration.Initialize(builder.Configuration);
+
+                // Add services to the container
+                ConfigureServices(builder.Services, builder.Configuration);
+
+                var app = builder.Build();
+
+                // Configure the HTTP request pipeline
+                Configure(app, app.Environment);
+
+                app.Run();
+            }
+            catch (Exception ex)
+            {
+                logger.Error(ex, "Application startup failed");
+                throw;
+            }
+            finally
+            {
+                LogManager.Shutdown();
+            }
         }
 
-        public IConfiguration Configuration { get; }
-
-        public void ConfigureServices(IServiceCollection services)
+        private static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
-            // Initialize BookstoreConfiguration
-            BookstoreConfiguration.Initialize(Configuration);
+            // Add Lambda hosting support (works alongside Kestrel)
+            services.AddAWSLambdaHosting(Amazon.Lambda.AspNetCoreServer.LambdaEventSource.HttpApi);
 
             // Add MVC with Areas support
             services.AddControllersWithViews();
 
             // Configure DbContext
-            var connectionString = GetConnectionString(Configuration);
+            var connectionString = GetConnectionString(configuration);
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString, sqlServerOptions =>
                 {
@@ -87,7 +115,7 @@ namespace Bookstore.Web
             services.AddScoped(typeof(IPaginatedList<>), typeof(PaginatedList<>));
 
             // Configure file and image services based on configuration
-            var fileServiceType = Configuration["Services:FileService"];
+            var fileServiceType = configuration["Services:FileService"];
             if (fileServiceType == "aws")
             {
                 services.AddAWSService<IAmazonS3>();
@@ -98,7 +126,7 @@ namespace Bookstore.Web
                 services.AddScoped<IFileService, LocalFileService>();
             }
 
-            var imageValidationServiceType = Configuration["Services:ImageValidationService"];
+            var imageValidationServiceType = configuration["Services:ImageValidationService"];
             if (imageValidationServiceType == "aws")
             {
                 services.AddAWSService<IAmazonRekognition>();
@@ -110,7 +138,7 @@ namespace Bookstore.Web
             }
 
             // Configure authentication
-            var authType = Configuration["Services:Authentication"];
+            var authType = configuration["Services:Authentication"];
             if (authType == "aws")
             {
                 services.AddAuthentication(options =>
@@ -122,8 +150,8 @@ namespace Bookstore.Web
                 .AddOpenIdConnect(options =>
                 {
                     options.ResponseType = OpenIdConnectResponseType.Code;
-                    options.MetadataAddress = Configuration["Authentication:Cognito:MetadataAddress"];
-                    options.ClientId = Configuration["Authentication:Cognito:LocalClientId"];
+                    options.MetadataAddress = configuration["Authentication:Cognito:MetadataAddress"];
+                    options.ClientId = configuration["Authentication:Cognito:LocalClientId"];
                     options.SaveTokens = true;
                     options.GetClaimsFromUserInfoEndpoint = true;
                 });
@@ -150,7 +178,7 @@ namespace Bookstore.Web
             });
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        private static void Configure(WebApplication app, IHostEnvironment env)
         {
             if (!env.IsDevelopment())
             {
@@ -162,9 +190,7 @@ namespace Bookstore.Web
                 app.UseDeveloperExceptionPage();
             }
 
-            // Don't use HTTPS redirection in Lambda - API Gateway handles this
-            // app.UseHttpsRedirection();
-            
+            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
@@ -172,7 +198,7 @@ namespace Bookstore.Web
             app.UseAuthentication();
             
             // Add local authentication middleware for development
-            var authType = Configuration["Services:Authentication"];
+            var authType = app.Configuration["Services:Authentication"];
             if (authType == "local")
             {
                 app.UseMiddleware<LocalAuthenticationMiddleware>();
@@ -182,16 +208,13 @@ namespace Bookstore.Web
 
             app.UseSession();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "areas",
-                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+            app.MapControllerRoute(
+                name: "areas",
+                pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
-            });
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Home}/{action=Index}/{id?}");
         }
 
         private static string GetConnectionString(IConfiguration configuration)
@@ -214,9 +237,11 @@ namespace Bookstore.Web
                     
                     return $"Server={rdsProxyEndpoint},{port};Database={databaseName};User Id=admin;Password={authToken};Encrypt=True;TrustServerCertificate=True;";
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Fall back to standard connection string
+                    // Log error and fall back to standard connection string
+                    var logger = LogManager.GetCurrentClassLogger();
+                    logger.Error(ex, "Failed to generate RDS Proxy IAM authentication token, falling back to standard connection string");
                 }
             }
             
