@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Bookstore.Web.ViewModel.Address
+namespace Bookstore.Web.Models.Address
 {
     public class AddressIndexViewModel
     {

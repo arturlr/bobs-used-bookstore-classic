@@ -1,44 +1,44 @@
 ﻿using System;
-using System.Web;
-using System.Web.Mvc;
+// using System.Web; // Removed for .NET 8
+using Microsoft.AspNetCore.Mvc;
 using BobsBookstoreClassic.Data;
 
 namespace Bookstore.Web.Controllers
 {
     public class AuthenticationController : Controller
     {
-        public ActionResult Login(string redirectUri = null)
+        public IActionResult Login(string redirectUri = null)
         {
             if(string.IsNullOrWhiteSpace(redirectUri)) return RedirectToAction("Index", "Home");
 
             return Redirect(redirectUri);
         }
 
-        public ActionResult LogOut()
+        public IActionResult LogOut()
         {
             return BookstoreConfiguration.GetSetting("Services/Authentication") == "aws" ? CognitoSignOut() : LocalSignOut();
         }
 
-        private ActionResult LocalSignOut()
+        private IActionResult LocalSignOut()
         {
             if (HttpContext.Request.Cookies["LocalAuthentication"] != null)
             {
-                HttpContext.Response.Cookies.Add(new HttpCookie("LocalAuthentication") { Expires = DateTime.Now.AddDays(-1) });
+                HttpContext.Response.Cookies.Delete("LocalAuthentication");
             }
 
             return RedirectToAction("Index", "Home");
         }
 
-        private ActionResult CognitoSignOut()
+        private IActionResult CognitoSignOut()
         {
             if (Request.Cookies[".AspNet.Cookies"] != null)
             {
-                Response.Cookies.Add(new HttpCookie(".AspNet.Cookies") { Expires = DateTime.Now.AddDays(-1) });
+                Response.Cookies.Delete(".AspNet.Cookies");
             }
 
             var domain = BookstoreConfiguration.GetSetting("Authentication/Cognito/CognitoDomain");
             var clientId = BookstoreConfiguration.GetSetting("Authentication/Cognito/LocalClientId");
-            var logoutUri = $"{Request.Url.Scheme}://{Request.Url.Host}:{Request.Url.Port}/";
+            var logoutUri = $"{Request.Scheme}://{Request.Host}/";
 
             return Redirect($"{domain}/logout?client_id={clientId}&logout_uri={logoutUri}");
         }

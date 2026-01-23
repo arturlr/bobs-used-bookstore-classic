@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bookstore.Web.ViewModel.Home
+namespace Bookstore.Web.Models.Home
 {
     public class HomeIndexViewModel
     {

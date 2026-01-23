@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Bookstore.Web.ViewModel.Wishlist
+namespace Bookstore.Web.Models.Wishlist
 {
     public class WishlistIndexViewModel
     {
