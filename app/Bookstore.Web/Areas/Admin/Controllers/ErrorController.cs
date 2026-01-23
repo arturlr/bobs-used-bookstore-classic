@@ -1,5 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 ﻿
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
@@ -7,7 +8,7 @@ namespace Bookstore.Web.Areas.Admin.Controllers
     public class ErrorController : AdminAreaControllerBase
     {
         [Route("/Error/Index/{code:int}")]
-        public ActionResult Index(int code)
+        public IActionResult Index(int code)
         {
             //var exception = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             //ViewData["Path"] = exception?.Path;
@@ -16,7 +17,7 @@ namespace Bookstore.Web.Areas.Admin.Controllers
         }
 
         [Route("/error")]
-        public ActionResult Support()
+        public IActionResult Support()
         {
             //var exception = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             //ViewData["Path"] = exception?.Path;

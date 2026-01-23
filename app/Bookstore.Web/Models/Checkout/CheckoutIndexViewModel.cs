@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 
-namespace Bookstore.Web.ViewModel.Checkout
+namespace Bookstore.Web.Models.Checkout
 {
     public class CheckoutIndexViewModel
     {

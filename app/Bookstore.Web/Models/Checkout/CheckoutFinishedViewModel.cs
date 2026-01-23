@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bookstore.Web.ViewModel.Checkout
+namespace Bookstore.Web.Models.Checkout
 {
     public class CheckoutFinishedViewModel
     {

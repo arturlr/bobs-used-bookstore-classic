@@ -1,9 +1,9 @@
 ﻿using Bookstore.Domain.Addresses;
 using Bookstore.Domain.Customers;
 using Bookstore.Web.Helpers;
-using Bookstore.Web.ViewModel.Address;
+using Bookstore.Web.Models.Address;
 using System.Threading.Tasks;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bookstore.Web.Controllers
 {
@@ -18,14 +18,14 @@ namespace Bookstore.Web.Controllers
             this.customerService = customerService;
         }
 
-        public async Task<ActionResult> Index()
+        public async Task<IActionResult> Index()
         {
             var addresses = await addressService.GetAddressesAsync(User.GetSub());
 
             return View(new AddressIndexViewModel(addresses));
         }
 
-        public ActionResult Create(string returnUrl)
+        public IActionResult Create(string returnUrl)
         {
             var model = new AddressCreateUpdateViewModel(returnUrl);
 
@@ -33,7 +33,7 @@ namespace Bookstore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(AddressCreateUpdateViewModel model)
+        public async Task<IActionResult> Create(AddressCreateUpdateViewModel model)
         {
             if (!ModelState.IsValid) return View("CreateUpdate", model);
 
@@ -44,7 +44,7 @@ namespace Bookstore.Web.Controllers
             return Redirect(model.ReturnUrl);
         }
 
-        public async Task<ActionResult> Update(int id, string returnUrl)
+        public async Task<IActionResult> Update(int id, string returnUrl)
         {
             var address = await addressService.GetAddressAsync(User.GetSub(), id);
 
@@ -52,7 +52,7 @@ namespace Bookstore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Update(AddressCreateUpdateViewModel model)
+        public async Task<IActionResult> Update(AddressCreateUpdateViewModel model)
         {
             if (!ModelState.IsValid) return View(model);
 
@@ -64,7 +64,7 @@ namespace Bookstore.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var dto = new DeleteAddressDto(id, User.GetSub());
 

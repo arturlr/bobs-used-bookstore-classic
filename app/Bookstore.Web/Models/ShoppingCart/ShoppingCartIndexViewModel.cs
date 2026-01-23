@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bookstore.Web.ViewModel.ShoppingCart
+namespace Bookstore.Web.Models.ShoppingCart
 {
     public class ShoppingCartIndexViewModel
     {

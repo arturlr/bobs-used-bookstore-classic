@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Bookstore.Web.Areas.Admin.Models.Orders;
 using Bookstore.Domain.Orders;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
@@ -14,14 +14,14 @@ namespace Bookstore.Web.Areas.Admin.Controllers
             this.orderService = orderService;
         }
 
-        public async Task<ActionResult> Index(OrderFilters filters, int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(OrderFilters filters, int pageIndex = 1, int pageSize = 10)
         {
             var orders = await orderService.GetOrdersAsync(filters, pageIndex, pageSize);
 
             return View(new OrderIndexViewModel(orders, filters));
         }
 
-        public async Task<ActionResult> Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var order = await orderService.GetOrderAsync(id);
 
@@ -29,7 +29,7 @@ namespace Bookstore.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Details(OrderDetailsViewModel model)
+        public async Task<IActionResult> Details(OrderDetailsViewModel model)
         {
             var dto = new UpdateOrderStatusDto(model.OrderId, model.SelectedOrderStatus);
 

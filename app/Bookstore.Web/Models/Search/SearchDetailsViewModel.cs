@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using Bookstore.Domain.Books;
 
-namespace Bookstore.Web.ViewModel.Search
+namespace Bookstore.Web.Models.Search
 {
     public class SearchDetailsViewModel
     {

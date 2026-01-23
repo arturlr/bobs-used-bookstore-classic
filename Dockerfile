@@ -1,20 +1,28 @@
-FROM mcr.microsoft.com/dotnet/framework/sdk:4.8 AS build
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+
+# Copy everything
+COPY . .
+
+# Restore and build
+RUN dotnet restore BobsBookstoreClassic.sln
+RUN dotnet build app/Bookstore.Web/Bookstore.Web.csproj -c Release -o /app/build
+RUN dotnet publish app/Bookstore.Web/Bookstore.Web.csproj -c Release -o /app/publish
+
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
-COPY . ./
+# Copy published application
+COPY --from=build /app/publish .
 
-RUN nuget restore
+# Expose port
+EXPOSE 8080
+EXPOSE 8081
 
-RUN msbuild app/Bookstore.Web/Bookstore.Web.csproj /p:DeployOnBuild=true /p:PublishProfile=FolderProfile.pubxml
+# Set environment variables
+ENV ASPNETCORE_URLS=http://+:8080
 
-FROM mcr.microsoft.com/dotnet/framework/aspnet:4.8-windowsservercore-ltsc2019 AS runtime
-
-WORKDIR /LogMonitor
-RUN Invoke-WebRequest -Uri "https://github.com/microsoft/windows-container-tools/releases/download/v2.0.2/LogMonitor.exe" -OutFile "LogMonitor.exe"
-COPY LogMonitorConfig.json .
-
-WORKDIR /inetpub/wwwroot
-
-COPY --from=build /app/app/Bookstore.Web/obj/Docker/publish/ .
-
-ENTRYPOINT ["C:\\LogMonitor\\LogMonitor.exe", "C:\\ServiceMonitor.exe", "w3svc"]
+# Run the application
+ENTRYPOINT ["dotnet", "Bookstore.Web.dll"]

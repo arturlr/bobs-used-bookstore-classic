@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Bookstore.Web.ViewModel.Orders
+namespace Bookstore.Web.Models.Orders
 {
     public class OrderDetailsViewModel
     {

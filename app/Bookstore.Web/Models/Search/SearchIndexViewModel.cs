@@ -5,7 +5,7 @@ using Bookstore.Domain.Books;
 using Bookstore.Domain;
 using System.Linq;
 
-namespace Bookstore.Web.ViewModel.Search
+namespace Bookstore.Web.Models.Search
 {
     public class SearchIndexViewModel : PaginatedViewModel
     {
