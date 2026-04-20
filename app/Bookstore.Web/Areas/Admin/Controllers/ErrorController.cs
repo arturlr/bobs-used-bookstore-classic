@@ -1,5 +1,6 @@
+using Microsoft.AspNetCore.Authorization;
 ﻿
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Bookstore.Web.Areas.Admin.Controllers
 {
