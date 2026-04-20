@@ -1,14 +1,23 @@
-﻿using Bookstore.Domain.Books;
+using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
-using System.Data.Entity;
+using System.Linq;
 
 namespace Bookstore.Data
 {
-    public class BookstoreDbInitializer : DropCreateDatabaseIfModelChanges<ApplicationDbContext>
+    /// <summary>
+    /// Standalone data seeder class that replaces the EF6 DropCreateDatabaseIfModelChanges initializer.
+    /// Call SeedData() at application startup if the database needs initial data.
+    /// </summary>
+    public class BookstoreDbInitializer
     {
-        protected override void Seed(ApplicationDbContext context)
+        public static void SeedData(ApplicationDbContext context)
         {
+            if (context.ReferenceData.Any())
+            {
+                return; // Database has already been seeded
+            }
+
             var referenceDataItems = new List<ReferenceDataItem> {
                 new ReferenceDataItem(ReferenceDataType.BookType, "Hardcover") { Id = 1 },
                 new ReferenceDataItem(ReferenceDataType.BookType, "Trade Paperback") { Id = 2 },
@@ -41,7 +50,7 @@ namespace Bookstore.Data
 
             context.ReferenceData.AddRange(referenceDataItems);
 
-            var books = new List<Book> {            
+            var books = new List<Book> {
                 new Book("2020: The Apocalypse", "Li Juan", "6556784356", 15, 1, 13, 5, 10.95M, 25, null, null, "/Content/Images/coverimages/apocalypse.png") { Id = 1 },
                 new Book("Children Of Iron", "Nikki Wolf", "7665438976", 16, 1, 11, 6, 13.95M, 3, null, null, "/Content/Images/coverimages/childrenofiron.png") { Id = 2 },
                 new Book("Gold In The Dark", "Richard Roe", "5442280765", 17, 1, 13, 5, 6.50M, 10, null, null, "/Content/Images/coverimages/goldinthedark.png") { Id = 3 },
