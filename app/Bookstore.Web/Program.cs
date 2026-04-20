@@ -235,7 +235,7 @@ namespace Bookstore.Web
         {
             var config = new LoggingConfiguration();
 
-            Target loggingTarget;
+            NLog.Targets.Target loggingTarget;
 
             if (BookstoreConfiguration.GetSetting("Services/LoggingService") == "aws")
             {
