@@ -36,7 +36,7 @@
 
             <div class="col-12">
                 <label class="visually-hidden" for="OfferStatusSelect">Offer status</label>
-                @Html.EnumDropDownListFor(a => a.Filters.OfferStatus, "All Offer Statuses", new { @class = "form-select" })
+                @Html.DropDownListFor(a => a.Filters.OfferStatus, Html.GetEnumSelectList<Bookstore.Domain.Offers.OfferStatus>(), "All Offer Statuses", new { @class = "form-select" })
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Filter</button>
