@@ -5,11 +5,11 @@ VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.Cdk", "app\Bookstore.Cdk\Bookstore.Cdk.csproj", "{7DCAEE46-ACE1-404C-B6F4-57E672ABCFCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookstore.Data", "app\Bookstore.Data\Bookstore.Data.csproj", "{3212526F-2D18-4A21-9B14-8B045EBF96F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.Data", "app\Bookstore.Data\Bookstore.Data.csproj", "{3212526F-2D18-4A21-9B14-8B045EBF96F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookstore.Domain", "app\Bookstore.Domain\Bookstore.Domain.csproj", "{D38DEAEA-CE1C-4309-83C8-626D44CA5301}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.Domain", "app\Bookstore.Domain\Bookstore.Domain.csproj", "{D38DEAEA-CE1C-4309-83C8-626D44CA5301}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bookstore.Web", "app\Bookstore.Web\Bookstore.Web.csproj", "{40E4E3FC-93F0-4CF2-A506-31546F7606C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bookstore.Web", "app\Bookstore.Web\Bookstore.Web.csproj", "{40E4E3FC-93F0-4CF2-A506-31546F7606C4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Files", "Solution Files", "{30F9C53A-B45D-4618-A5FD-B57AA94EFCBA}"
 	ProjectSection(SolutionItems) = preProject
