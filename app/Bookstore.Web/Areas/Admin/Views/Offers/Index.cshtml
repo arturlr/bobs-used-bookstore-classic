@@ -1,11 +1,11 @@
-﻿@using Bookstore.Domain.Offers;
+@using Bookstore.Domain.Offers;
 @using Bookstore.Domain;
 
 @model Bookstore.Web.Areas.Admin.Models.Offers.OfferIndexViewModel
 
 @{ ViewData["Title"] = "Offers"; }
 
-@Html.Partial("_MessageBanner")
+<partial name="_MessageBanner" />
 
 <div class="d-flex m-3">
     <h5 class="me-auto">Offers</h5>
@@ -36,7 +36,7 @@
 
             <div class="col-12">
                 <label class="visually-hidden" for="OfferStatusSelect">Offer status</label>
-                @Html.EnumDropDownListFor(a => a.Filters.OfferStatus, "All Offer Statuses", new { @class = "form-select" })
+                @Html.DropDownListFor(a => a.Filters.OfferStatus, Html.GetEnumSelectList<OfferStatus>(), "All Offer Statuses", new { @class = "form-select" })
             </div>
             <div class="col-12">
                 <button type="submit" class="btn btn-primary">Filter</button>
@@ -52,7 +52,7 @@
 <div class="card m-3">
     <div class="card-header">
         <div class="d-flex justify-content-end">
-            @Html.Partial("_Paginator", Model)
+            <partial name="_Paginator" model="Model" />
         </div>
     </div>
 
@@ -122,7 +122,7 @@
 
     <div class="card-footer">
         <div class="d-flex justify-content-end">
-            @Html.Partial("_Paginator", Model)
+            <partial name="_Paginator" model="Model" />
         </div>
     </div>
 </div>
