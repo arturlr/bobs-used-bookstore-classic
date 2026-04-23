@@ -1,52 +1,52 @@
-﻿using System;
-using Microsoft.Owin;
+using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using Bookstore.Domain.Customers;
+using Microsoft.AspNetCore.Http;
+
 
 namespace Bookstore.Web.Helpers
 {
-    public class LocalAuthenticationMiddleware : OwinMiddleware
+    public class LocalAuthenticationMiddleware
     {
+        private readonly RequestDelegate _next;
         private const string UserId = "FB6135C7-1464-4A72-B74E-4B63D343DD09";
 
         private readonly ICustomerService _customerService;
 
-        public LocalAuthenticationMiddleware(OwinMiddleware next, ICustomerService customerService) : base(next)
+        public LocalAuthenticationMiddleware(RequestDelegate next, ICustomerService customerService)
         {
             _customerService = customerService;
+            _next = next;
         }
 
-        public override async Task Invoke(IOwinContext context)
+        public async Task Invoke(HttpContext context)
         {
             if (context.Request.Path.Value.StartsWith("/Authentication/Login"))
             {
                 CreateClaimsPrincipal(context);
 
-                await SaveCustomerDetailsAsync();
+                await SaveCustomerDetailsAsync(context);
 
-                var userCookie = new HttpCookie("LocalAuthentication") { Expires = DateTime.Now.AddDays(1) };
-
-                HttpContext.Current.Response.Cookies.Add(userCookie);
+                context.Response.Cookies.Append("LocalAuthentication", "", new CookieOptions { Expires = DateTime.Now.AddDays(1) });
 
                 context.Response.Redirect("/");
             }
-            else if (HttpContext.Current.Request.Cookies["LocalAuthentication"] != null)
+            else if (context.Request.Cookies["LocalAuthentication"] != null)
             {
                 CreateClaimsPrincipal(context);
 
-                await SaveCustomerDetailsAsync();
+                await SaveCustomerDetailsAsync(context);
 
-                await Next.Invoke(context);
+                await _next.Invoke(context);
             }
             else
             {
-                await Next.Invoke(context);
+                await _next.Invoke(context);
             }
         }
 
-        private void CreateClaimsPrincipal(IOwinContext context)
+        private void CreateClaimsPrincipal(HttpContext context)
         {
             var identity = new ClaimsIdentity("Application");
 
@@ -56,12 +56,12 @@ namespace Bookstore.Web.Helpers
             identity.AddClaim(new Claim("family_name", "User"));
             identity.AddClaim(new Claim(ClaimTypes.Role, "Administrators"));
 
-            context.Request.User = new ClaimsPrincipal(identity);
+            context.User = new ClaimsPrincipal(identity);
         }
 
-        private async Task SaveCustomerDetailsAsync()
+        private async Task SaveCustomerDetailsAsync(HttpContext context)
         {
-            var identity = (ClaimsIdentity)HttpContext.Current.User.Identity;
+            var identity = (ClaimsIdentity)context.User.Identity;
 
             var dto = new CreateOrUpdateCustomerDto(
                 identity.FindFirst("nameidentifier").Value,
