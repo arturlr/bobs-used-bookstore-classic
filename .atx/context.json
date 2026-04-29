@@ -1,0 +1,27 @@
+{
+  "phase": "assessed",
+  "discovery": {
+    "completedAt": "2026-04-22T00:00:00Z",
+    "components": 6,
+    "discoveryFile": ".atx/discovery.json"
+  },
+  "assessment": {
+    "startedAt": "2026-04-22T00:00:00Z",
+    "workspaceId": "1439208d-e7c3-401e-9f05-3625533b671f",
+    "jobId": "41f22b4f-960e-45b4-a50a-c62c8ecf6fa5",
+    "reportDir": ".atx/assessment-report/"
+  },
+  "spec": {
+    "folder": ".kiro/specs/atx-transform",
+    "requirementsApproved": false,
+    "tasksGenerated": false
+  },
+  "workStyle": null,
+  "execution": {
+    "currentTask": null,
+    "completedTasks": [],
+    "workspaceId": "1439208d-e7c3-401e-9f05-3625533b671f",
+    "activeJobIds": ["41f22b4f-960e-45b4-a50a-c62c8ecf6fa5"]
+  },
+  "updatedAt": "2026-04-22T00:00:00Z"
+}

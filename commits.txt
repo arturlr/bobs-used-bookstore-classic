@@ -1,0 +1,47 @@
+commit fb9f2f52fc57f62db0d825bca60b09a680f9daf3 (HEAD -> atx-result-staging-20260420_164236_dec39076)
+Author: ATX Bot <checkpoint@atx.bot>
+Date:   Mon Apr 20 10:14:29 2026 -0700
+
+    Step 8: Update Bookstore.Cdk project, Dockerfile, and perform final build validation. Build status: Success
+
+commit 64a17ae14960f0e9dbc0d6fa2368dfb5e983b915
+Author: ATX Bot <checkpoint@atx.bot>
+Date:   Mon Apr 20 10:11:54 2026 -0700
+
+    Step 7: Migrate Razor views, move static files to wwwroot, and update _ViewImports. Build status: Success
+
+commit 22ff38ed244ea56dc4107c053cbd751790a39091
+Author: ATX Bot <checkpoint@atx.bot>
+Date:   Mon Apr 20 10:09:00 2026 -0700
+
+    Step 6: Migrate helpers, custom attributes, view models, and middleware to ASP.NET Core types. Build status: Failed (remaining errors are in Razor views only - addressed in Step 7)
+
+commit 646b4d3d707725d96468086e4a13d2a471a5d39e
+Author: ATX Bot <checkpoint@atx.bot>
+Date:   Mon Apr 20 10:05:15 2026 -0700
+
+    Step 5: Migrate controllers from System.Web.Mvc to Microsoft.AspNetCore.Mvc. Build status: Failed (expected - helpers and view models still need migration in Step 6)
+
+commit 9739154a5bd9bc9fe5eaa08a1c5aee78f94a70f5
+Author: ATX Bot <checkpoint@atx.bot>
+Date:   Mon Apr 20 10:01:33 2026 -0700
+
+    Step 4: Create Program.cs entry point, appsettings.json configuration, and replace Global.asax and OWIN Startup. Build status: Failed (expected - remaining source code in controllers/helpers still needs migration in Steps 5-6)
+
+commit 8972fa9b43cf609de5f653ae10421b301af37d40
+Author: ATX Bot <checkpoint@atx.bot>
+Date:   Mon Apr 20 09:58:49 2026 -0700
+
+    Step 3: Convert Bookstore.Web project to SDK-style .csproj targeting .NET 8 and migrate NuGet packages. Build status: Failed (expected - source code migration in steps 4-6; project file/package restore succeeds)
+
+commit 8c18d633098f4c56c4970e9adde1e1482200e822
+Author: ATX Bot <checkpoint@atx.bot>
+Date:   Mon Apr 20 09:56:02 2026 -0700
+
+    Step 2: Convert Bookstore.Data project to SDK-style .csproj targeting .NET 8 and migrate Entity Framework 6 to Entity Framework Core 8. Build status: Success
+
+commit b0eb2b2dea2a587c07f23962c8362af87ef4f24d
+Author: ATX Bot <checkpoint@atx.bot>
+Date:   Mon Apr 20 09:51:24 2026 -0700
+
+    Step 1: Convert Bookstore.Domain project to SDK-style .csproj targeting .NET 8. Build status: Success (Domain project builds individually; solution build expectedly fails until dependent projects are migrated)

@@ -9,9 +9,9 @@
     <ProjectReference Include="..\Bookstore.Common\Bookstore.Common.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Amazon.CDK.Lib" Version="2.250.0" />
-    <PackageReference Include="Cdklabs.CdkNag" Version="2.38.1" />
+    <PackageReference Include="Amazon.CDK.Lib" Version="2.248.0" />
+    <PackageReference Include="Cdklabs.CdkNag" Version="2.37.55" />
     <PackageReference Include="Constructs" Version="10.6.0" />
-    <PackageReference Include="Amazon.Jsii.Analyzers" Version="*" PrivateAssets="all" />
+    <PackageReference Include="Amazon.Jsii.Analyzers" Version="1.128.0" />
   </ItemGroup>
 </Project>

@@ -6,8 +6,6 @@ using Bookstore.Web.ViewModel.Checkout;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
 
 namespace Bookstore.Web.Controllers
 {

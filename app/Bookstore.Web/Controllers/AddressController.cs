@@ -5,8 +5,6 @@ using Bookstore.Web.ViewModel.Address;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
 
 namespace Bookstore.Web.Controllers
 {

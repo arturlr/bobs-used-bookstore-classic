@@ -7,20 +7,18 @@ using Microsoft.AspNetCore.Http;
 
 namespace Bookstore.Web.Helpers
 {
-    public class LocalAuthenticationMiddleware
+    public class LocalAuthenticationMiddleware : IMiddleware
     {
-        private readonly RequestDelegate _next;
         private const string UserId = "FB6135C7-1464-4A72-B74E-4B63D343DD09";
 
         private readonly ICustomerService _customerService;
 
-        public LocalAuthenticationMiddleware(RequestDelegate next, ICustomerService customerService)
+        public LocalAuthenticationMiddleware(ICustomerService customerService)
         {
             _customerService = customerService;
-            _next = next;
         }
 
-        public async Task Invoke(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             if (context.Request.Path.Value.StartsWith("/Authentication/Login"))
             {
@@ -28,9 +26,10 @@ namespace Bookstore.Web.Helpers
 
                 await SaveCustomerDetailsAsync(context);
 
-                context.Response.Cookies.Append("LocalAuthentication", "", new CookieOptions { Expires = DateTime.Now.AddDays(1) });
+                context.Response.Cookies.Append("LocalAuthentication", "true", new CookieOptions { Expires = DateTime.Now.AddDays(1) });
 
                 context.Response.Redirect("/");
+                return;
             }
             else if (context.Request.Cookies["LocalAuthentication"] != null)
             {
@@ -38,11 +37,11 @@ namespace Bookstore.Web.Helpers
 
                 await SaveCustomerDetailsAsync(context);
 
-                await _next.Invoke(context);
+                await next(context);
             }
             else
             {
-                await _next.Invoke(context);
+                await next(context);
             }
         }
 

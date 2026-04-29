@@ -1,0 +1,48 @@
+{
+  "discoveredAt": "2026-04-22T00:00:00Z",
+  "components": [
+    {
+      "path": "app/Bookstore.Web/",
+      "stack": ".NET Framework 4.8, ASP.NET MVC 5.3, Entity Framework 6.5, OWIN/Katana, Autofac DI",
+      "risk": "HIGH",
+      "reason": ".NET Framework 4.8 is legacy — Windows-only, no cross-platform support, limited future investment. Uses packages.config, Web.config, Global.asax, system.web pipeline.",
+      "dependencies": ["AWSSDK.S3 v1", "AWSSDK.Rekognition v1", "AWSSDK.CloudWatchLogs v1", "AWSSDK.SimpleSystemsManagement v1", "NLog", "Newtonsoft.Json", "Magick.NET", "Microsoft.Owin.Security.OpenIdConnect"],
+      "recommendedAgent": "ATX (.NET modernization agent)"
+    },
+    {
+      "path": "app/Bookstore.Data/",
+      "stack": ".NET Framework 4.8, Entity Framework 6.5, AWSSDK v1 (S3, Rekognition)",
+      "risk": "HIGH",
+      "reason": ".NET Framework 4.8 EOL path. Entity Framework 6 → EF Core migration needed.",
+      "recommendedAgent": "ATX (.NET modernization agent)"
+    },
+    {
+      "path": "app/Bookstore.Domain/",
+      "stack": ".NET Framework 4.8, pure domain logic",
+      "risk": "HIGH",
+      "reason": ".NET Framework 4.8 — domain layer with no external dependencies, straightforward to port.",
+      "recommendedAgent": "ATX (.NET modernization agent)"
+    },
+    {
+      "path": "app/Bookstore.Common/",
+      "stack": ".NET Standard 2.0",
+      "risk": "LOW",
+      "reason": "Already targets netstandard2.0 — compatible with both .NET Framework and modern .NET. Minimal or no changes needed.",
+      "recommendedAgent": "None (already cross-platform compatible)"
+    },
+    {
+      "path": "app/Bookstore.Cdk/",
+      "stack": ".NET 6.0, AWS CDK v2",
+      "risk": "LOW",
+      "reason": "Already on modern .NET SDK-style project. May want to upgrade from net6.0 to net8.0.",
+      "recommendedAgent": "ATX CLI or manual upgrade"
+    },
+    {
+      "path": "Dockerfile",
+      "stack": "Windows Server Core LTSC 2019, IIS (aspnet:4.8)",
+      "risk": "HIGH",
+      "reason": "Windows container with IIS — modernization target would be Linux container with Kestrel.",
+      "recommendedAgent": "ATX (.NET modernization agent)"
+    }
+  ]
+}

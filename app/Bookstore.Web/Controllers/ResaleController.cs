@@ -5,8 +5,6 @@ using Bookstore.Domain.Offers;
 using Bookstore.Domain.ReferenceData;
 using Microsoft.AspNetCore.Mvc;
 
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
 
 namespace Bookstore.Web.Controllers
 {

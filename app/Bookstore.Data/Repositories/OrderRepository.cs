@@ -1,9 +1,9 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.Orders;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,11 +29,17 @@ namespace Bookstore.Data.Repositories
                 .Include(x => x.Customer)
                 .Include(x => x.Address)
                 .Include(x => x.OrderItems)
-                .Include(x => x.OrderItems.Select(y => y.Book))
-                .Include(x => x.OrderItems.Select(y => y.Book.BookType))
-                .Include(x => x.OrderItems.Select(y => y.Book.Condition))
-                .Include(x => x.OrderItems.Select(y => y.Book.Genre))
-                .Include(x => x.OrderItems.Select(y => y.Book.Publisher))
+                    .ThenInclude(y => y.Book)
+                        .ThenInclude(b => b.BookType)
+                .Include(x => x.OrderItems)
+                    .ThenInclude(y => y.Book)
+                        .ThenInclude(b => b.Condition)
+                .Include(x => x.OrderItems)
+                    .ThenInclude(y => y.Book)
+                        .ThenInclude(b => b.Genre)
+                .Include(x => x.OrderItems)
+                    .ThenInclude(y => y.Book)
+                        .ThenInclude(b => b.Publisher)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -90,7 +96,7 @@ namespace Bookstore.Data.Repositories
             query = query
                 .Include(x => x.Customer)
                 .Include(x => x.OrderItems)
-                .Include(x => x.OrderItems.Select(y => y.Book));
+                    .ThenInclude(y => y.Book);
 
             var result = new PaginatedList<Order>(query, pageIndex, pageSize);
 
@@ -103,7 +109,7 @@ namespace Bookstore.Data.Repositories
         {
             return await dbContext.Order
                 .Include(x => x.OrderItems)
-                .Include(x => x.OrderItems.Select(y => y.Book))
+                    .ThenInclude(y => y.Book)
                 .Where(x => x.Customer.Sub == sub)
                 .ToListAsync();
         }

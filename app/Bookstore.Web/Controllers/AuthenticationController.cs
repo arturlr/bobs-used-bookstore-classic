@@ -1,6 +1,5 @@
 using System;
 using BobsBookstoreClassic.Data;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -24,7 +23,7 @@ namespace Bookstore.Web.Controllers
         {
             if (HttpContext.Request.Cookies["LocalAuthentication"] != null)
             {
-                HttpContext.Response.Cookies.Append("LocalAuthentication", "", new CookieOptions { Expires = DateTime.Now.AddDays(-1) });
+                HttpContext.Response.Cookies.Delete("LocalAuthentication");
             }
 
             return RedirectToAction("Index", "Home");
@@ -34,7 +33,7 @@ namespace Bookstore.Web.Controllers
         {
             if (Request.Cookies[".AspNet.Cookies"] != null)
             {
-                Response.Cookies.Append(".AspNet.Cookies", "", new CookieOptions { Expires = DateTime.Now.AddDays(-1) });
+                Response.Cookies.Delete(".AspNet.Cookies");
             }
 
             var domain = BookstoreConfiguration.GetSetting("Authentication/Cognito/CognitoDomain");

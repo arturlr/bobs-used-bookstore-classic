@@ -1,14 +1,18 @@
-﻿using Bookstore.Domain.Books;
+using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
-using System.Data.Entity;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookstore.Data
 {
-    public class BookstoreDbInitializer : DropCreateDatabaseIfModelChanges<ApplicationDbContext>
+    public static class BookstoreDbInitializer
     {
-        protected override void Seed(ApplicationDbContext context)
+        public static void Seed(ApplicationDbContext context)
         {
+            if (context.ReferenceData.Any())
+                return;
+
             var referenceDataItems = new List<ReferenceDataItem> {
                 new ReferenceDataItem(ReferenceDataType.BookType, "Hardcover") { Id = 1 },
                 new ReferenceDataItem(ReferenceDataType.BookType, "Trade Paperback") { Id = 2 },
