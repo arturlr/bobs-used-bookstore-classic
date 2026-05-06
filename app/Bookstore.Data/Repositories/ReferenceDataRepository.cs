@@ -1,8 +1,8 @@
-﻿using Bookstore.Domain;
+using Bookstore.Domain;
 using Bookstore.Domain.Books;
 using Bookstore.Domain.ReferenceData;
 using System.Collections.Generic;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,7 +19,7 @@ namespace Bookstore.Data.Repositories
 
         async Task IReferenceDataRepository.AddAsync(ReferenceDataItem item)
         {
-            await Task.Run(() => dbContext.ReferenceData.Add(item));
+            await dbContext.ReferenceData.AddAsync(item);
         }
 
         async Task<ReferenceDataItem> IReferenceDataRepository.GetAsync(int id)

@@ -1,8 +1,5 @@
-﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Web;
+using Microsoft.AspNetCore.Http;
 
 namespace Bookstore.Web.Helpers
 {
@@ -15,11 +12,11 @@ namespace Bookstore.Web.Helpers
             this.imageTypes = imageTypes;
         }
 
-        public override bool IsValid(object value)
+        public override bool IsValid(object? value)
         {
             if (value == null) return true;
 
-            if (!(value is HttpPostedFileBase file)) return base.IsValid(value);
+            if (value is not IFormFile file) return base.IsValid(value);
 
             var extension = Path.GetExtension(file.FileName);
 

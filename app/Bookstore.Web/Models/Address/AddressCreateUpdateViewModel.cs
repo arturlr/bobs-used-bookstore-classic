@@ -1,12 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Bookstore.Web.ViewModel.Address
 {
     public class AddressCreateUpdateViewModel
     {
-        public AddressCreateUpdateViewModel() { }
+        public AddressCreateUpdateViewModel()
+        {
+        }
 
         public AddressCreateUpdateViewModel(string returnUrl)
         {
@@ -26,21 +26,13 @@ namespace Bookstore.Web.ViewModel.Address
         }
 
         public int Id { get; set; }
-
-        public string AddressLine1 { get; set; }
-
-        public string AddressLine2 { get; set; }
-
-        public string City { get; set; }
-
-        public string State { get; set; }
-
-        public string Country { get; set; }
-
-        public string ZipCode { get; set; }
-
-        public string ReturnUrl { get; set; }
-
+        public string AddressLine1 { get; set; } = string.Empty;
+        public string AddressLine2 { get; set; } = string.Empty;
+        public string City { get; set; } = string.Empty;
+        public string State { get; set; } = string.Empty;
+        public string Country { get; set; } = string.Empty;
+        public string ZipCode { get; set; } = string.Empty;
+        public string ReturnUrl { get; set; } = string.Empty;
         public IEnumerable<SelectListItem> States => new List<SelectListItem>
         {
             new SelectListItem { Value = "", Text = "" },
@@ -97,5 +89,4 @@ namespace Bookstore.Web.ViewModel.Address
             new SelectListItem { Value = "WY", Text = "Wyoming" }
         };
     }
-
 }

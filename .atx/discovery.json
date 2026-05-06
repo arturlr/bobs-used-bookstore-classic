@@ -1,0 +1,55 @@
+{
+  "scannedAt": "2026-05-06",
+  "workspace": "BobsBookstoreClassic",
+  "components": [
+    {
+      "name": "Bookstore.Web",
+      "framework": "ASP.NET MVC 5",
+      "targetFramework": ".NET Framework 4.8",
+      "dependencies": ["Autofac 8.2", "OWIN 4.2", "NLog 5.4", "Entity Framework 6.5", "AWS SDK v3", "Newtonsoft.Json 13"],
+      "complexity": "HIGH",
+      "blockers": ["System.Web dependency", "OWIN middleware", "Windows Server Core container"]
+    },
+    {
+      "name": "Bookstore.Domain",
+      "framework": "Class Library",
+      "targetFramework": ".NET Framework 4.8",
+      "dependencies": [],
+      "complexity": "LOW",
+      "blockers": []
+    },
+    {
+      "name": "Bookstore.Data",
+      "framework": "Class Library",
+      "targetFramework": ".NET Framework 4.8",
+      "dependencies": ["Entity Framework 6.5", "AWS SDK S3", "AWS SDK Rekognition", "Magick.NET"],
+      "complexity": "MEDIUM",
+      "blockers": ["EF6 to EF Core migration"]
+    },
+    {
+      "name": "Bookstore.Common",
+      "framework": "Class Library",
+      "targetFramework": ".NET Standard 2.0",
+      "dependencies": [],
+      "complexity": "LOW",
+      "blockers": []
+    },
+    {
+      "name": "Bookstore.Cdk",
+      "framework": "AWS CDK",
+      "targetFramework": ".NET 6",
+      "dependencies": ["Amazon.CDK.Lib 2.188"],
+      "complexity": "LOW",
+      "blockers": []
+    }
+  ],
+  "matchedAgents": [
+    {
+      "name": "dotnet-chatty-agent",
+      "type": "ORCHESTRATOR_AGENT",
+      "purpose": ".NET code assessment + transformation (interactive)",
+      "matchReason": "ASP.NET MVC 5 on .NET Framework 4.8 → .NET 10"
+    }
+  ],
+  "targetVersion": ".NET 10 (net10.0)"
+}
